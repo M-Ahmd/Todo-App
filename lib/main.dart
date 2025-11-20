@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     String token = resData['data']['token'] ?? '';
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => TodolistScreen(email: email, token: token),
