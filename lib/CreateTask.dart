@@ -10,7 +10,6 @@ class Createtask extends StatelessWidget {
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController statusController = TextEditingController();
 
   Widget createTitleField() {
     return TextField(
