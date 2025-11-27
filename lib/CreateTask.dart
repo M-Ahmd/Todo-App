@@ -32,7 +32,7 @@ class Createtask extends StatelessWidget {
     );
   }
 
-  Widget createEvalutedButton() {
+  Widget createEvalutedButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
         final dataToSend = {
@@ -54,6 +54,9 @@ class Createtask extends StatelessWidget {
 
         // For debugging, log the status
         print('CreateTask -> uploads.php status: ${response.statusCode}');
+        Navigator.pop(context, true);
+
+
       },
       child: Text('Save Task'),
     );
@@ -77,7 +80,7 @@ class Createtask extends StatelessWidget {
           SizedBox(height: 10),
           createDescriptionField(),
           SizedBox(height: 20),
-          createEvalutedButton(),
+          createEvalutedButton(context),
         ],
       ),
     );

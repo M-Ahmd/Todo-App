@@ -3,20 +3,36 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'CreateTask.dart';
 
-class TodolistScreen extends StatelessWidget {
+class Todolistscreen extends StatefulWidget {
   final String? email;
   final String? token;
 
-  const TodolistScreen({super.key, this.email, this.token});
+  const Todolistscreen({super.key, this.email, this.token});
+
+  @override
+  State<Todolistscreen> createState() => _TodolistscreenState();
+}
+
+class _TodolistscreenState extends State<Todolistscreen> {
+  late Future<List> _todoListFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _todoListFuture = getTodos();
+  }
 
   Future<List> getTodos() async {
     final response = await http.get(
       Uri.parse('http://localhost:8082/php_task3/list.php'),
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+      }, //$widget.token wrong
     );
 
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
+      print(response.body);
       return json['data']['todo_list'];
     } else {
       throw Exception('Failed');
@@ -25,15 +41,15 @@ class TodolistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int lastId = 0;
+    int lastId = 1;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tasks for ${email ?? "User"}'),
+        title: Text('Tasks for ${widget.email ?? "User"}'),
         backgroundColor: Colors.blue,
       ),
 
       body: FutureBuilder<List>(
-        future: getTodos(),
+        future: _todoListFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -58,14 +74,22 @@ class TodolistScreen extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton( 
-        onPressed: () {
-          Navigator.push(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final bool result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Createtask(token: token, id: lastId)),
+            MaterialPageRoute(
+              builder: (context) => Createtask(token: widget.token, id: lastId),
+            ),
           );
+
+          if (result == true) {
+            setState(() {
+              _todoListFuture = getTodos();
+            });
+          }
         },
-        child: const Icon(Icons.add), // <--- رمز الزر +
+        child: const Icon(Icons.add),
       ),
     );
   }
