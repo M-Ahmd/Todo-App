@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       return;
     }
-    const String apiUrl = 'http://localhost:8080/php_task3/login.php';
+    const String apiUrl = 'http://localhost:8082/php_task3/login.php';
     Map<String, String> requestBody = {'email': email, 'password': password};
 
     final res = await http.post(

@@ -10,7 +10,7 @@ class TodolistScreen extends StatelessWidget {
 
   Future<List> getTodos() async {
     final response = await http.get(
-      Uri.parse('http://localhost:8080/php_task3/list.php'),
+      Uri.parse('http://localhost:8082/php_task3/list.php'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
