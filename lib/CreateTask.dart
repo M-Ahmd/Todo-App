@@ -34,13 +34,20 @@ class Createtask extends StatelessWidget {
   Widget createEvalutedButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
+        if (titleController.text.trim().isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Task title cannot be empty')),
+          );
+          return;
+        }
+
         final dataToSend = {
           'id': id?.toString() ?? '',
           'title': titleController.text,
           'description': descriptionController.text,
           'status': 'inprogress',
           'priority': 'high',
-          'created_at': '2025-11-01 16:00:00',
+            'created_at': DateTime.now().toIso8601String(),
           'due_date': '2026-11-14 16:00:00',
         };
 
