@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'CreateTask.dart';
 
 class TodolistScreen extends StatelessWidget {
   final String? email;
@@ -24,6 +25,7 @@ class TodolistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int lastId = 0;
     return Scaffold(
       appBar: AppBar(
         title: Text('Tasks for ${email ?? "User"}'),
@@ -42,6 +44,7 @@ class TodolistScreen extends StatelessWidget {
           }
 
           final list = snapshot.data ?? [];
+          lastId = list.length + 1;
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (context, index) {
@@ -54,6 +57,15 @@ class TodolistScreen extends StatelessWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton( 
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Createtask(token: token, id: lastId)),
+          );
+        },
+        child: const Icon(Icons.add), // <--- رمز الزر +
       ),
     );
   }

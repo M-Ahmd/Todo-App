@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'TodoListScreen.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -117,11 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const String apiUrl = 'http://localhost:8082/php_task3/login.php';
     Map<String, String> requestBody = {'email': email, 'password': password};
 
-    final res = await http.post(
-      Uri.parse(apiUrl),
-      
-      body: requestBody,
-    );
+    final res = await http.post(Uri.parse(apiUrl), body: requestBody);
     //print(res.body);
     final resData = jsonDecode(res.body);
     if (resData['success'] != true) {
