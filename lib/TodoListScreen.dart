@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'CreateTask.dart';
+import 'EditScreen.dart';
 
 class Todolistscreen extends StatefulWidget {
   final String? email;
@@ -69,6 +70,19 @@ class _TodolistscreenState extends State<Todolistscreen> {
                 title: Text(list[index]['title']),
                 subtitle: Text(list[index]['description']),
                 trailing: Text(list[index]['status']),
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Editscreen(
+                        token: widget.token,
+                        id: int.parse(list[index]['id'].toString()),
+                        title: list[index]['title'],
+                        description: list[index]['description'],
+                      ),
+                    ),
+                  ),
+                },
               );
             },
           );
