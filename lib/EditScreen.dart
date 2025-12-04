@@ -105,11 +105,11 @@ class _EditscreenState extends State<Editscreen> {
       var streamResponse = await request.send();
       var response = await streamResponse.stream.bytesToString();
       print("PHP ERROR: $response");
-      if (streamResponse.statusCode == 200 || streamResponse.statusCode == 201) {
+      if (streamResponse.statusCode == 200 ||
+          streamResponse.statusCode == 201) {
         if (context.mounted) Navigator.pop(context, true);
         print('response is ${streamResponse.statusCode}');
       } else {
-        
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed: ${streamResponse.statusCode}')),
@@ -121,12 +121,35 @@ class _EditscreenState extends State<Editscreen> {
     }
   }
 
+  Future<void> deleteToDo() async {
+    final request = await http.post(
+      Uri.parse("http://localhost:8082/php_task3/delete.php"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${widget.token}',
+      },
+      body: jsonEncode({"id": widget.id}),
+    );
+    if (request.statusCode == 200 || request.statusCode == 201) {
+      Navigator.pop(context, true);
+    }
+    else
+    {
+      throw Exception('Failed to delete task');
+    }
+  }
+
   Widget createSaveButton() {
     return ElevatedButton(onPressed: Update, child: Text("Save the data"));
   }
+
   Widget createDeleteButton() {
-    return ElevatedButton(onPressed: (){}, child: Text("Delete this todo"));
+    return ElevatedButton(
+      onPressed: deleteToDo,
+      child: Text("Delete this todo"),
+    );
   }
+
   Future<void> _pickImage() async {
     try {
       //setState
@@ -196,9 +219,8 @@ class _EditscreenState extends State<Editscreen> {
 
           createSaveButton(),
 
-          SizedBox(height: 20,)
-          ,
-          createDeleteButton()
+          SizedBox(height: 20),
+          createDeleteButton(),
         ],
       ),
     );

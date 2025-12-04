@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -41,8 +43,9 @@ class _TodolistscreenState extends State<Todolistscreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    int lastId = 1;
+    // شيلنا تعريف lastId من هنا لأنه ملوش لازمة فوق
     return Scaffold(
       appBar: AppBar(
         title: Text('Tasks for ${widget.email ?? "User"}'),
@@ -61,17 +64,18 @@ class _TodolistscreenState extends State<Todolistscreen> {
           }
 
           final list = snapshot.data ?? [];
-          
+
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (context, index) {
+              // شيلنا سطر حساب الـ lastId من هنا عشان كان غلط
               return ListTile(
                 leading: CircleAvatar(child: Text("${list[index]['id']}")),
                 title: Text(list[index]['title']),
                 subtitle: Text(list[index]['description']),
                 trailing: Text(list[index]['status']),
                 onTap: () async {
-                  final bool result = await Navigator.push(
+                  final bool? result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Editscreen(
@@ -93,12 +97,30 @@ class _TodolistscreenState extends State<Todolistscreen> {
           );
         },
       ),
+
+      // التعديل كله هنا في الزرار
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final bool result = await Navigator.push(
+          // 1. نجيب الداتا الحالية
+          List currentList = await _todoListFuture;
+
+          // 2. نحسب أكبر ID
+          int maxId = 0;
+          if (currentList.isNotEmpty) {
+            for (var item in currentList) {
+              int currentId = int.tryParse(item['id'].toString()) ?? 0;
+              if (currentId > maxId) {
+                maxId = currentId;
+              }
+            }
+          }
+
+          // 3. نبعت الرقم الجديد (أكبر رقم + 1)
+          final bool? result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Createtask(token: widget.token, id: lastId),
+              builder: (context) =>
+                  Createtask(token: widget.token, id: maxId + 1),
             ),
           );
 
