@@ -61,17 +61,17 @@ class _TodolistscreenState extends State<Todolistscreen> {
           }
 
           final list = snapshot.data ?? [];
-          lastId = list.length + 1;
+          
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (context, index) {
               return ListTile(
-                leading: CircleAvatar(child: Text("${index + 1}")),
+                leading: CircleAvatar(child: Text("${list[index]['id']}")),
                 title: Text(list[index]['title']),
                 subtitle: Text(list[index]['description']),
                 trailing: Text(list[index]['status']),
-                onTap: () => {
-                  Navigator.push(
+                onTap: () async {
+                  final bool result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Editscreen(
@@ -81,7 +81,12 @@ class _TodolistscreenState extends State<Todolistscreen> {
                         description: list[index]['description'],
                       ),
                     ),
-                  ),
+                  );
+                  if (result == true) {
+                    setState(() {
+                      _todoListFuture = getTodos();
+                    });
+                  }
                 },
               );
             },
